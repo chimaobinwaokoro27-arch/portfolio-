@@ -1,74 +1,146 @@
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, X } from "lucide-react";
+
+const EASE = [0.16, 1, 0.3, 1];
 
 const links = [
-  { label: "Projects", href: "#projects" },
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
+  { label: "Index", href: "#home", index: "00" },
+  { label: "Work", href: "#projects", index: "01" },
+  { label: "About", href: "#about", index: "02" },
+  { label: "Capabilities", href: "#skills", index: "03" },
+  { label: "Contact", href: "#contact", index: "04" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ ready }) {
+  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    let frame = 0;
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 32);
+        frame = 0;
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  useEffect(() => {
+    const onKey = (event) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("menu-open", open);
+    return () => document.body.classList.remove("menu-open");
+  }, [open]);
+
   return (
-    <nav className="fixed top-0 left-0 z-50 w-full border-b border-white/5 bg-[#050505]/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-12">
-        <a href="#" className="font-mono text-sm font-bold tracking-wider text-white">
-          DEV.VIC&nbsp;&nbsp;<span className="text-red-600"></span>
-        </a>
+    <>
+      <motion.header
+        className={`site-nav ${scrolled ? "is-scrolled" : ""} ${ready ? "is-ready" : ""}`}
+        initial={false}
+        animate={{ opacity: ready ? 1 : 0, y: ready ? 0 : -14 }}
+        transition={{ duration: 0.8, ease: EASE }}
+      >
+        <div className="site-nav__inner">
+          <a className="brand" href="#home" aria-label="MAOBI — back to top">
+            <span className="brand__mark">M</span>
+            <span className="brand__word">MAOBI</span>
+            <span className="brand__dot" aria-hidden="true" />
+          </a>
 
-        <ul className="hidden items-center gap-8 md:flex">
-          <li className="flex items-center gap-2">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-red-600 shadow-[0_0_10px_#dc2626]" />
-            <span className="font-mono text-[10px] tracking-widest text-neutral-500">
-              HERE TO HELP
-            </span>
-          </li>
-          {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                className="font-mono text-xs tracking-wider text-neutral-500 transition-colors hover:text-white"
-              >
-                {l.label}
+          <nav className="nav-links" aria-label="Primary">
+            {links.slice(1).map((link) => (
+              <a key={link.href} href={link.href} className="nav-link">
+                <span className="nav-link__index">{link.index}</span>
+                <span className="nav-link__label">{link.label}</span>
               </a>
-            </li>
-          ))}
-        </ul>
-
-        <button
-          onClick={() => setOpen(!open)}
-          className="text-white md:hidden"
-          aria-label="Toggle menu"
-        >
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {open && (
-        <div className="border-t border-white/5 bg-[#050505]/95 backdrop-blur-md md:hidden">
-          <ul className="flex flex-col px-5 py-4 sm:px-8">
-            <li className="mb-2 flex items-center gap-2">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-red-600" />
-              <span className="font-mono text-[10px] tracking-widest text-neutral-500">
-                HERE TO HELP
-              </span>
-            </li>
-            {links.map((l) => (
-              <li key={l.href}>
-                <a
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="block py-3 font-mono text-sm tracking-wider text-neutral-400 transition-colors hover:text-white"
-                >
-                  {l.label}
-                </a>
-              </li>
             ))}
-          </ul>
+          </nav>
+
+          <div className="nav-status">
+            <span className="status-dot" aria-hidden="true" />
+            <span>OPEN FOR PROJECTS</span>
+          </div>
+
+          <button
+            type="button"
+            className="menu-toggle"
+            onClick={() => setOpen((value) => !value)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+          >
+            <span className="menu-toggle__label">{open ? "CLOSE" : "MENU"}</span>
+            <span className={`menu-toggle__icon ${open ? "is-open" : ""}`} aria-hidden="true">
+              <span />
+              <span />
+            </span>
+          </button>
         </div>
-      )}
-    </nav>
+      </motion.header>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="mobile-menu"
+            className="mobile-menu"
+            initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+            exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: 0.65, ease: EASE }}
+          >
+            <div className="mobile-menu__glow" aria-hidden="true" />
+            <div className="mobile-menu__top">
+              <span>MENU / 2026</span>
+              <button
+                type="button"
+                className="mobile-menu__close"
+                onClick={() => setOpen(false)}
+                aria-label="Close menu"
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            <nav className="mobile-menu__nav" aria-label="Mobile">
+              {links.map((link, index) => (
+                <motion.a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  initial={{ opacity: 0, y: 28 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.12 + index * 0.055, ease: EASE }}
+                >
+                  <span className="mobile-menu__index">{link.index}</span>
+                  <span>{link.label}</span>
+                  <ArrowUpRight size={22} aria-hidden="true" />
+                </motion.a>
+              ))}
+            </nav>
+
+            <div className="mobile-menu__foot">
+              <a href="mailto:chimaobinwaokoro27@gmail.com">chimaobinwaokoro27@gmail.com</a>
+              <a href="https://github.com/chimaobinwaokoro27-arch" target="_blank" rel="noopener noreferrer">
+                GITHUB ↗
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
