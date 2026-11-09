@@ -5,7 +5,6 @@ import {
   useReducedMotion,
   useScroll,
   useSpring,
-  useTransform,
 } from "framer-motion";
 import { ArrowUpRight, MoveRight } from "lucide-react";
 import SectionHead from "./SectionHead";
@@ -89,7 +88,7 @@ function HorizontalWork() {
   });
 
   useMotionValueEvent(scrollYProgress, "change", (value) => {
-    setActive(Math.min(projects.length, Math.max(1, Math.floor(value * projects.length) + 1)));
+    setActive(Math.max(1, Math.floor(value * projects.length) + 1));
   });
 
   useEffect(() => {
@@ -149,6 +148,18 @@ function HorizontalWork() {
   );
 }
 
+function EmptyState() {
+  return (
+    <div className="work-empty">
+      <h2>No projects yet</h2>
+      <p>Check back soon — new work is added regularly.</p>
+      <a href="#contact" className="btn btn--ghost">
+        GET IN TOUCH
+      </a>
+    </div>
+  );
+}
+
 export default function Projects() {
   const reduceMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -167,7 +178,8 @@ export default function Projects() {
 
           <div className="work-intro__aside">
             <p>
-              One cinematic experience built with React, motion and considered detail.
+              Three builds treated as individual digital experiences. Each one
+              is framed, paced and built around a single idea.
             </p>
             <span className="work-intro__note">
               Interface previews are direction studies, not live captures. Full
@@ -177,8 +189,10 @@ export default function Projects() {
         </div>
       </div>
 
-      {horizontal ? (
+      {horizontal && projects.length > 0 ? (
         <HorizontalWork />
+      ) : projects.length === 0 ? (
+        <EmptyState />
       ) : (
         <div className="shell">
           <div className="work-stack">
