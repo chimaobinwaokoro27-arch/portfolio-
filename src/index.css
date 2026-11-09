@@ -1202,11 +1202,7 @@ main {
   width: 100%;
   min-width: 0;
   will-change: transform;
-  animation: marqueeMove 42s linear infinite !important;
-}
-
-.marquee:hover .marquee__track {
-  animation-play-state: paused;
+  animation: marqueeMove 42s linear infinite;
 }
 
 @keyframes marqueeMove {
