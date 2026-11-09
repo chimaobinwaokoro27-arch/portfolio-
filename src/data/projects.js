@@ -1,38 +1,22 @@
 export const projects = [
   {
-    id: 1,
-    name: "ARISE AI",
+    id: "01",
+    title: "COMING SOON",
+    titleLine2: "PROJECT",
+    type: "COMING SOON",
+    year: "—",
+    status: "COMING SOON",
     description:
-      "An intelligent calculator interface with multiple modes and a modern UI. Built with a focus on clean design and smooth interactions.",
-    tech: ["HTML", "CSS", "JavaScript"],
-    live: "#",
-    github: "#",
-  },
-  {
-    id: 2,
-    name: "ZAHRA FITS",
-    description:
-      "A modern fashion website focused on clean visual presentation and responsive design. Emphasizes typography and imagery.",
-    tech: ["HTML", "CSS", "JavaScript"],
-    live: "#",
-    github: "#",
-  },
-  {
-    id: 3,
-    name: "E-COMMERCE PROJECT",
-    description:
-      "A responsive shopping experience with authentication, product browsing, and cart functionality powered by API integration.",
-    tech: ["HTML", "Tailwind CSS", "JavaScript", "API"],
-    live: "#",
-    github: "#",
-  },
-  {
-    id: 4,
-    name: "REACT PROJECT",
-    description:
-      "A modern React application. Replace this with your actual project description and details.",
-    tech: ["React", "JavaScript"],
-    live: "#",
-    github: "#",
+      "A cinematic portfolio experience built with React, motion and considered detail. Stay tuned for new projects.",
+    stack: ["React", "Tailwind CSS", "Framer Motion"],
+    visual: "coming-soon",
+    label: "PROJECT / COMING SOON",
+    note: "New projects coming soon",
   },
 ];
+
+export const contact = {
+  email: "chimaobinwaokoro27@gmail.com",
+  linkedin: "https://www.linkedin.com/in/chimaobi-nwaokoro-952620430/",
+  github: "https://github.com/chimaobinwaokoro27-arch",
+};
