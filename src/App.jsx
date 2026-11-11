@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AnimatePresence, MotionConfig, useReducedMotion } from "framer-motion";
 import Intro from "./components/Intro";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -52,28 +53,30 @@ export default function App() {
   };
 
   return (
-    <div className="site">
-      <AnimatePresence>
-        {!introDone && (
-          <Intro
-            key={introKey}
-            reducedMotion={Boolean(reduceMotion)}
-            onComplete={finishIntro}
-          />
-        )}
-      </AnimatePresence>
+    <MotionConfig reducedMotion="never">
+      <div className="site">
+        <AnimatePresence>
+          {!introDone && (
+            <Intro
+              key={introKey}
+              reducedMotion={Boolean(reduceMotion)}
+              onComplete={finishIntro}
+            />
+          )}
+        </AnimatePresence>
 
-      <Navbar ready={introDone} />
+        <Navbar ready={introDone} />
 
-      <main id="main">
-        <Hero ready={introDone} />
-        <Marquee />
-        <About />
-        <Projects />
-        <Contact />
-      </main>
+        <main id="main">
+          <Hero ready={introDone} />
+          <Marquee />
+          <About />
+          <Projects />
+          <Contact />
+        </main>
 
-      <Footer onReplayIntro={replayIntro} />
-    </div>
+        <Footer onReplayIntro={replayIntro} />
+      </div>
+    </MotionConfig>
   );
 }
